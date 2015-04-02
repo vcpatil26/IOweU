@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Approve Transactions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- <link href="css/style.css" rel="stylesheet"> -->
+  <!-- Add custom CSS here -->
+  <link href="css/ioweu.css" rel="stylesheet">
+  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+  <!-- Page Specific CSS -->
+  <link rel="stylesheet" href="css/morris-0.4.3.min.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="js/flot/jquery.flot.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.pie.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.resize.js"></script>
+
+  <!--JS for datepicker -->
+  <script src="js/jquery-1.9.1.js"></script>
+  <script src="js/jquery-ui.js"></script>
+
+<script>
+    $(function () {
+        $(document).ready(function () {
+            var value = getURLParamValue("id");
+            $.getJSON("getTransaction.jsp", {id: value}, function (data) {
+                console.log(data);
+                var transaction = {};
+                $('#trID').html(data.transactionID);
+                $('#trOwner').html(data.transactionOwner);
+                $('#desc').html(data.description);
+                $('#totalAmount').html(data.amount + " $");
+                $('#trStatus').html(data.status);
+                if (data.group != null && data.group != undefined){
+                    $('#group').html(data.group.groupName);
+                }else{
+                    $('#group').html("");
+                }
+
+                var trnsShares = "";
+                var sharedAmounts = {};
+                sharedAmounts = data.sharedAmount;
+                if (sharedAmounts != undefined) {
+                    $.each(sharedAmounts, function (key, val) {
+                        var userShare = key + " : " +  val + " $ <br/>";
+                        trnsShares += userShare;
+                    });
+                }
+                $('#trshare').html(trnsShares);
+
+                var trnsSharestatuses = "";
+                var sharedStatus = {};
+                sharedStatus = data.sharedStatus;
+                if (sharedStatus != undefined) {
+                    $.each(sharedStatus, function (key, val) {
+                        var shareStatus = key + " : " +  val.sharedStatus + "<br/>";
+                        trnsSharestatuses += shareStatus;
+                    });
+                }
+                $('#trShareStatus').html(trnsSharestatuses);
+
+            });
+        });
+    });
+    var getURLParamValue = function (paramName) {
+        if (paramName = (new RegExp("[?&]" + encodeURIComponent(paramName) + "=([^&]*)")).exec(location.search))
+            return decodeURIComponent(paramName[1]);
+    };
+</script>
+
+  <script type="text/javascript">
+      var owedAnount = 0;
+      var otherOweAmount = 0;
+      $(function () {
+          var chart;
+
+          $(document).ready(function () {
+              $.getJSON("getUserOwe.jsp", function (data1) {
+                  console.log(data1);
+                  for (var i in data1){
+                      owedAnount += data1[i].amount;
+                  }
+                  console.log("owedAmt1" + owedAnount);
+                  if (otherOweAmount != 0 && owedAnount !=0){
+                      if (otherOweAmount > owedAnount){
+                          var value1 = otherOweAmount - owedAnount;
+                          var html = "<h5><font color='white'>You are owed : " + value1  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      } else{
+                          var value2 = owedAnount - otherOweAmount;
+                          var html = "<h5><font color='white'>You owe others : " + value2  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      }
+                  }
+              });
+
+              $.getJSON("getOthersOweReport.jsp", function (data2) {
+                  for (var j in data2){
+                      otherOweAmount += data2[j].amount;
+                  }
+                  console.log("othersOwe1" + otherOweAmount);
+                  if (otherOweAmount != 0 && owedAnount !=0){
+                      if (otherOweAmount > owedAnount){
+                          var value1 = otherOweAmount - owedAnount;
+                          var html = "<h5><font color='white'>You are owed : " + value1  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      } else{
+                          var value2 = owedAnount - otherOweAmount;
+                          var html = "<h5><font color='white'>You owe others : " + value2  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      }
+                  }
+              });
+
+              // get authorized user
+              $.getJSON("getLoggedUser.jsp", function (data) {
+                  var userAuthorized = false;
+                  var userName;
+                  $.each(data, function (key, val) {
+                      if (key == 'authorized') {
+                          if (val) {
+                              userAuthorized = true;
+                          } else {
+                              userAuthorized = false;
+                          }
+                      } else if (key == 'authUser') {
+                          userName = val;
+                      }
+                  });
+                  if (userAuthorized) {
+                      var user = "<a class='dropdown-toggle nav navbar-nav navbar-brand' role='button' data-toggle='dropdown' href='#'><i class='fa fa-user'></i>" + userName + "<b class='caret'></b></a>";
+                      $('#loggedUserLink').append(user);
+                  }
+
+              });
+          });
+      });
+
+  </script>
+
+<body>
+<div style="margin:0px; padding:0px;width: 1366px; overflow:hidden" class="container">
+
+    <div style="padding:0px;margin-bottom: 0px;" class="navbar navbar-fixed-top navbar-inverse">
+        <lable style="font-size:30px; margin-top:8px" class=" navbar-brand"><strong>IOweU</strong></lable>
+
+
+        <!-- Top Nav Bar -->
+        <li id="loggedUserLink" style="margin-top:5px;margin-right: 20px;  list-style-type:none"
+            class="dropdown messages-dropdown navbar-nav navbar-right navbar-user">
+
+            <ul class="dropdown-menu" style="min-width:200px">
+
+                <li class="message-preview" role="presentation"><a role="menuitem" tabindex="-1" href="home.jsp"><i
+                        class="glyphicon glyphicon-off"></i> Log out</a></li>
+            </ul>
+        </li>
+
+        <li style="margin-top:5px;margin-right: 25px; list-style-type:none;height: 44px;width: 203px;"
+            class="dropdown messages-dropdown navbar-nav navbar-right navbar-user">
+            <form action="" class="navbar-form navbar-right">
+                <div style="width:240px" class="input-group">
+                    <input type="Search" placeholder="User/Group" class="form-control"/>
+
+                    <div class="input-group-btn">
+                        <button class="btn btn-default">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </li>
+
+        <!-- Top Nav Bar end-->
+
+        <!-- Side nav Bar -->
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul style="margin-top:9px; width:200px; background:#595959" class="nav navbar-nav  side-nav">
+                <li><a href="dashboard.jsp"><font color="white"><i class="fa fa-dashboard"></i> Dashboard</font></a>
+                </li>
+                <!--<li><a href="#modal-container-addBill" data-toggle="modal"><font color="white"><i-->
+                        <!--class="glyphicon glyphicon-plus"></i> Add Bill</font></a></li>-->
+                <!--<li><a href="#modal-container-settleUp" data-toggle="modal"><font color="white"><i-->
+                        <!--class="glyphicon glyphicon-retweet"></i> Settle Up</font></a></li>-->
+                <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown"><font color="white"><i-->
+                            <!--class="glyphicon glyphicon-th"></i> Groups <i class="fa fa-caret-square-o-down"></i></font></a>-->
+                    <!--<ul class="dropdown-menu" id="existingGroups">-->
+
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown"><font color="white"><i-->
+                            <!--class="glyphicon glyphicon-user"></i> Users <b class="fa fa-caret-square-o-down"></b></font></a>-->
+                    <!--<ul id="existingPrivateUsers" role="menu" class="dropdown-menu">-->
+                    <!--</ul>-->
+                <!--</li>-->
+            </ul>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul style="margin-top:9px;margin-left:945px;width:200px; background:#595959"
+                class="nav navbar-nav side-nav">
+                <li style="margin-bottom:2px; height:85px;padding:0px;margin-right:18px;" class="text-center"><h2><font
+                        color="white">Your Total Balance</font></h2></li>
+                <li style="margin-left:10px;" id="balanceAmount" class="text-center navbar-brand"></li>
+                <li class="divider"></li>
+                <li><a href="recentActivity.jsp"><font color="white"><i class="fa fa-bar-chart-o"></i> Recent
+                    Activity</font></a>
+                </li>
+                <li><a href="approveTransactions.jsp" id="approveTransactions"><font color="white"><i
+                        class="fa fa-table"></i> Approve Transactions</font></a></li>
+                <li><a href="transactionLog.jsp"><font color="white"><i class="fa fa-edit"></i> Transaction
+                    Log</font></a>
+                </li>
+                <li><a href="categoryAnalysis.jsp"><font color="white"><i class="fa fa-font"></i> Category
+                    Analysis</font></a></li>
+
+            </ul>
+        </div>
+        <!-- Side nav Bar end-->
+    </div>
+</div>
+<!-- Nav Bar end-->
+<div class="" style="margin-top: 20px;margin-bottom: 0px;
+    width: 970px;
+    height: 580px;
+    margin-left: 200px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px">
+
+    <section style="padding:2px; padding-left:10px" class="col-sm-12 panel well">
+    	<h3>Transaction Details</h3>
+    </section>
+
+    <div>
+        <table class="table table-striped">
+            <tbody id="transactiontb">
+            <tr>
+                <td>Transaction ID</td>
+                <td id="trID"></td>
+            </tr>
+            <tr>
+                <td>Added By</td>
+                <td id="trOwner"></td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td id="desc"></td>
+            </tr>
+            <tr>
+                <td>Total Amount</td>
+                <td id="totalAmount"></td>
+            </tr>
+            <tr>
+                <td>Group</td>
+                <td id="group"></td>
+            </tr>
+            <tr>
+                <td>Transaction Status</td>
+                <td id="trStatus"></td>
+            </tr>
+            <tr>
+                <td>Shared Amounts</td>
+                <td id="trshare"></td>
+            </tr>
+            <tr>
+                <td>Transaction Shared Statuses</td>
+                <td id="trShareStatus"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>

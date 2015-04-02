@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html ng-app="phonecatApp">
+<head>
+  <meta charset="utf-8">
+  <title>IOweU-Transaction Log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- <link href="css/style.css" rel="stylesheet"> -->
+  <!-- Add custom CSS here -->
+  <link href="css/ioweu.css" rel="stylesheet">
+  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+  <!-- Page Specific CSS -->
+  <link rel="stylesheet" href="css/morris-0.4.3.min.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
+
+  <!-- Fav and touch icons -->
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="js/flot/jquery.flot.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.pie.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.resize.js"></script>
+
+  <!--JS for datepicker -->
+  <script src="js/jquery-1.9.1.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  
+  <script type="text/javascript" src="js/angular.min.js"></script>
+  
+  <script type="text/javascript" src="js/flot/jquery.flot.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.pie.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.resize.js"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    $( "#transactionLog_FromDate" ).datepicker();
+    $( "#transactionLog_ToDate" ).datepicker();
+  });
+  </script>
+    <script>
+        var phonecatApp = angular.module('phonecatApp', []);
+        phonecatApp.controller('PhoneListCtrl', function ($scope) {
+            fetchData($scope);
+        });
+
+
+        var fetchData = function ($scope) {
+
+
+                // get pending transactions
+                $.getJSON("getAllTransactions.jsp", function (data) {
+                    console.log(data);
+                    var transactions = [];
+                    for (var i in data) {
+                        var transaction = {};
+                        transaction.id = data[i].transactionID;
+                        transaction.addedBy = data[i].transactionOwner;
+
+                        transaction.date = data[i].date;
+                        transaction.status = data[i].status;
+                        if (data[i].group != undefined){
+                            transaction.group = data[i].group.groupName;
+                            var members =  data[i].group.membersList;
+                            var membersString = "";
+                            for (var k in members){
+                                membersString += members[k] + " ";
+                            }
+                            transaction.sharedWith = membersString;
+                        }else{
+                            transaction.group = "";
+                            transaction.sharedWith = "";
+                        }
+                        transaction.amount = data[i].amount;
+                        transactions.push(transaction);
+                    }
+                    var jsonMsg = "transactions = [{";
+                    for (var j in transactions ){
+                         jsonMsg += "id:'" + transaction.id + "', addedBy:'" + transaction.addedBy + "', sharedWith:'" + transaction.sharedWith + "', date: '" + transaction.date + "', amount:'" + transaction.amount + "', group:'" + transaction.group + "', status:'" +  transaction.status + "'},";
+                    }
+                    jsonMsg += "]";
+                    console.log(jsonMsg);
+                    $scope.transactions = transactions;
+                    $scope.$apply();
+                });
+        };
+
+    </script>
+
+  <script type="text/javascript">
+      var owedAnount = 0;
+      var otherOweAmount = 0;
+      $(function () {
+          $(document).ready(function () {
+              $.getJSON("getUserOwe.jsp", function (data1) {
+                  console.log(data1);
+                  for (var i in data1){
+                      owedAnount += data1[i].amount;
+                  }
+                  console.log("owedAmt1" + owedAnount);
+                  if (otherOweAmount != 0 && owedAnount !=0){
+                      if (otherOweAmount > owedAnount){
+                          var value1 = otherOweAmount - owedAnount;
+                          var html = "<h5><font color='white'>You are owed : " + value1  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      } else{
+                          var value2 = owedAnount - otherOweAmount;
+                          var html = "<h5><font color='white'>You owe others : " + value2  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      }
+                  }
+              });
+
+              $.getJSON("getOthersOweReport.jsp", function (data2) {
+                  for (var j in data2){
+                      otherOweAmount += data2[j].amount;
+                  }
+                  console.log("othersOwe1" + otherOweAmount);
+                  if (otherOweAmount != 0 && owedAnount !=0){
+                      if (otherOweAmount > owedAnount){
+                          var value1 = otherOweAmount - owedAnount;
+                          var html = "<h5><font color='white'>You are owed : " + value1  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      } else{
+                          var value2 = owedAnount - otherOweAmount;
+                          var html = "<h5><font color='white'>You owe others : " + value2  + "</font></h5>";
+                          $('#balanceAmount').append(html);
+                      }
+                  }
+              });
+
+              // get authorized user
+              $.getJSON("getLoggedUser.jsp", function (data) {
+                  var userAuthorized = false;
+                  var userName;
+                  $.each(data, function (key, val) {
+                      if (key == 'authorized') {
+                          if (val) {
+                              userAuthorized = true;
+                          } else {
+                              userAuthorized = false;
+                          }
+                      } else if (key == 'authUser') {
+                          userName = val;
+                      }
+                  });
+                  if (userAuthorized) {
+                      var user = "<a class='dropdown-toggle nav navbar-nav navbar-brand' role='button' data-toggle='dropdown' href='#'><i class='fa fa-user'></i>" + userName + "<b class='caret'></b></a>";
+                      $('#loggedUserLink').append(user);
+                  }
+
+              });
+          });
+      });
+
+  </script>
+
+</head>
+<body ng-controller="PhoneListCtrl">
+
+<div style="margin:0px; padding:0px;width: 1366px; overflow:hidden" class="container">
+
+    <div style="padding:0px;margin-bottom: 0px;" class="navbar navbar-fixed-top navbar-inverse">
+        <lable style="font-size:30px; margin-top:8px" class=" navbar-brand"><strong>IOweU</strong></lable>
+
+
+        <!-- Top Nav Bar -->
+        <li id="loggedUserLink" style="margin-top:5px;margin-right: 20px;  list-style-type:none"
+            class="dropdown messages-dropdown navbar-nav navbar-right navbar-user">
+
+            <ul class="dropdown-menu" style="min-width:200px">
+
+                <li class="message-preview" role="presentation"><a role="menuitem" tabindex="-1" href="home.jsp"><i
+                        class="glyphicon glyphicon-off"></i> Log out</a></li>
+            </ul>
+        </li>
+
+        <li style="margin-top:5px;margin-right: 25px; list-style-type:none;height: 44px;width: 203px;"
+            class="dropdown messages-dropdown navbar-nav navbar-right navbar-user">
+            <form action="" class="navbar-form navbar-right">
+                <div style="width:240px" class="input-group">
+                    <input type="Search" placeholder="User/Group" class="form-control"/>
+
+                    <div class="input-group-btn">
+                        <button class="btn btn-default">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </li>
+
+        <!-- Top Nav Bar end-->
+
+        <!-- Side nav Bar -->
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul style="margin-top:9px; width:200px; background:#595959" class="nav navbar-nav  side-nav">
+                <li><a href="dashboard.jsp"><font color="white"><i class="fa fa-dashboard"></i> Dashboard</font></a>
+                </li>
+                <!--<li><a href="#modal-container-addBill" data-toggle="modal"><font color="white"><i-->
+                        <!--class="glyphicon glyphicon-plus"></i> Add Bill</font></a></li>-->
+                <!--<li><a href="#modal-container-settleUp" data-toggle="modal"><font color="white"><i-->
+                        <!--class="glyphicon glyphicon-retweet"></i> Settle Up</font></a></li>-->
+                <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown"><font color="white"><i-->
+                            <!--class="glyphicon glyphicon-th"></i> Groups <i class="fa fa-caret-square-o-down"></i></font></a>-->
+                    <!--<ul class="dropdown-menu" id="existingGroups">-->
+
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown"><font color="white"><i-->
+                            <!--class="glyphicon glyphicon-user"></i> Users <b class="fa fa-caret-square-o-down"></b></font></a>-->
+                    <!--<ul id="existingPrivateUsers" role="menu" class="dropdown-menu">-->
+                    <!--</ul>-->
+                <!--</li>-->
+            </ul>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul style="margin-top:9px;margin-left:945px;width:200px; background:#595959"
+                class="nav navbar-nav side-nav">
+                <li style="margin-bottom:2px; height:85px;padding:0px;margin-right:18px;" class="text-center"><h2><font
+                        color="white">Your Total Balance</font></h2></li>
+                <li style="margin-left:10px;" id="balanceAmount" class="text-center navbar-brand"></li>
+                <li class="divider"></li>
+                <li><a href="recentActivity.jsp"><font color="white"><i class="fa fa-bar-chart-o"></i> Recent
+                    Activity</font></a>
+                </li>
+                <li><a href="approveTransactions.jsp" id="approveTransactions"><font color="white"><i
+                        class="fa fa-table"></i> Approve Transactions</font></a></li>
+                <li><a href="transactionLog.jsp"><font color="white"><i class="fa fa-edit"></i> Transaction
+                    Log</font></a>
+                </li>
+                <li><a href="categoryAnalysis.jsp"><font color="white"><i class="fa fa-font"></i> Category
+                    Analysis</font></a></li>
+
+            </ul>
+        </div>
+        <!-- Side nav Bar end-->
+    </div>
+</div>
+<!-- Nav Bar end-->
+<!-- Center Div -->
+<div class="" style="margin-top: 20px;margin-bottom: 0px;
+    width: 970px;
+    height: 580px;
+    margin-left: 200px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px" >
+    	<section style="padding:2px; padding-left:10px" class="col-sm-12 panel well">
+    		<h3>Transaction Log</h3>
+    	</section>
+	
+	<form style="padding:10px" class="form-inline well">
+		<div class="form-group">
+		     <label for="transactionLog_FromDate" class="col-sm-3 control-label">From</label> 
+			<div class="col-sm-9">
+			     <input  class="form-control" id="transactionLog_FromDate" placeholder="MM/DD/YYYY" required="required">	
+			</div>
+		</div>
+		<div class="form-group">
+		     <label for="transactionLog_ToDate" class="col-sm-3 control-label">To</label> 
+			<div class="col-sm-9">
+			     <input  class="form-control" id="transactionLog_ToDate" placeholder="MM/DD/YYYY" required="required">	
+			</div>
+		</div>
+		<button type="submit" class="btn  btn-success" id="Analysis_Go">GO</button>
+	</form>
+	
+	
+	<!--<div ng-repeat="transactions"></div>-->
+	
+	<table id="searchTransactionResults" class="table table-bordered pull-center col-sm-12" >
+	   <thead>
+		<tr>  
+		    <th style="text-align:center">Transaction-ID<br><input class="col-sm-12" placeholder="filter by ID.." ng-model="transaction.id"></th>
+		    <th style="text-align:center">Added By<br><input class="col-sm-12" placeholder="filter by name.." ng-model="transaction.addedBy"></th>
+		    <th style="text-align:center">Shared With<br><input class="col-sm-12" placeholder="filter by name.." ng-model="transaction.sharedWith"></th>
+		    <th style="text-align:center">Date<br><input class="col-sm-12" placeholder="filter by date.." ng-model="transaction.date"></th>
+		    
+		    <th style="text-align:center">Amount<br><input class="col-sm-12" placeholder="filter by amount.." ng-model="transaction.amount"></th>
+		    <th style="text-align:center">Group<br><input class="col-sm-12" placeholder="filter by group.." ng-model="transaction.group"></th>
+		    <th style="text-align:center">Status<br><input class="col-sm-12" placeholder="filter by status.." ng-model="transaction.status"></th>
+		</tr>
+	   </thead>
+	   <tbody>
+		<tr ng-repeat="transaction in transactions" align="center">
+		    <td><a href="getTransactionPage.jsp?id={{transaction.id}}">{{transaction.id}}</a></td>
+		    <td>{{transaction.addedBy}}</td>
+		    <td>{{transaction.sharedWith}}</td>
+		    <td>{{transaction.date | date:'medium'}}</td>
+		    <td>{{transaction.amount}}</td>
+		    <td>{{transaction.group}}</td>
+		    <td>{{transaction.status}}</td>
+		</tr> 	
+	   </tbody>
+	</table>
+    </div>
+</body>
+</html>

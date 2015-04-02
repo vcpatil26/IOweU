@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>IOweU-Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="css/style.css" rel="stylesheet"> -->
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+
+
+
+</head>
+
+<body>
+<div style="margin:0px; padding:0px;width: 1366px; overflow:hidden" class="container">
+
+    <div style="padding:0px;margin-bottom: 0px;" class="navbar navbar-fixed-top navbar-inverse">
+        <lable style="font-size:30px; margin-top:8px" class=" navbar-brand"><strong>IOweU</strong></lable>
+    </div>
+
+
+    <div class="row clearfix">
+        <!-- Media Div -->
+        <div style="margin-top:120px;padding-left:50px" class="col-md-8 column">
+            </br>
+            </br>
+            <div class="media">
+                <a href="#" class="pull-left"><img src="https://lh4.ggpht.com/1e13MWH6Asq4RraVLXryYKX454PdbOVg8KFQ-8Jr8RQ9ap4hcGnmW6_nKeG7srMLaPG2=w300" class="media-object" alt=""></a>
+                </br>
+                </br>
+                <div class="media-body">
+                    <h4 class="media-heading">Managing Debts made easy....!!</h4> xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                </div>
+            </div>
+        </div><!-- Media Div end-->
+
+        <!-- Login Form Div -->
+        <div style="margin-top:120px;" class="col-md-4 column">
+
+
+
+            <!-- Login Form -->
+            <form action="j_spring_security_check" style="margin-left:60px; margin-right:13px;padding:5%" class="well form-horizontal" method="POST">
+                <div class="form-group">
+                    <legend class="text-center">Log In</legend>
+                    <div class="col-sm-12">
+                        <input class="form-control" name="j_username" id="Login_Username" placeholder="Username" type="text" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input class="form-control" name="j_password" id="inputPassword3" placeholder="Password" type="password" required="required">
+                    </div>
+                </div>
+
+                <div id="logInError" class="form-group" style="display: none">
+                    <div style="padding-right:5px; margin-left:15px; margin-bottom:5px; " class="col-sm-8 alert alert-danger">
+                        <p>Invalid Username or Password!!!</p>
+                    </div>
+                </div>
+
+                <div style="padding:0%" class="form-group">
+                    <div class="col-sm-12">
+                        <div class="checkbox">
+                            <label><input type="checkbox"> Remember me</label></br>
+                            <a href="http://www.google.com">Forgot your Password</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </div>
+                </div>
+            </form><!-- Login Form end -->
+
+            <div style="margin:20px" class="col-md-12 column text-center">
+                <a id="modal-signUp" href="#modal-container-signUp" data-toggle="modal">Create new account</a>
+            </div>
+
+            <div class="modal fade" id="modal-container-signUp" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div style="padding-bottom:1%" class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="glyphicon glyphicon-remove"></i></button>
+                            <h2 class="modal-title text-center" id="myModalLabel">Sign up</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form id="signUp" class="form-horizontal well">
+                                <div class="form-group">
+                                    <label for="firstName" class="col-sm-4 control-label">First Name</label>
+                                    <div class="col-sm-8">
+                                        <input  class="form-control" name="firstName" id="firstName" placeholder="Enter First Name" type="text" required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName" class="col-sm-4 control-label">Last Name</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" name="lastName" id="lastName" placeholder="Enter Last Name" type="text" required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-sm-4 control-label">Email</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" name="email" id="email" placeholder="Enter Email" type="email" required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userName" class="col-sm-4 control-label">Username</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" name="username" id="userName" placeholder="Enter Username" type="text" required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-4 control-label">Password</label>
+                                    <div class="col-lg-8">
+                                        <input class="form-control" type="password" name="password" id="password" placeholder="Enter Password" required="required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-4 control-label">Confirm Password</label>
+                                    <div class="col-lg-8">
+                                        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required="required">
+                                    </div>
+                                    <input type="hidden" name="registered" id="registered" value="true">
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 pull-right">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn  btn-success" id="Signup_Submit" onclick="singUp()">Submit</button>
+                                    </div>
+                                </div>
+                                <p id="display"></p>
+                            </form>
+                            <div id="signUpSuccess" style="display: none">
+                                <h4><font color="green">Sign Up Successful!!</font></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- Login Form Div end-->
+</div>
+
+<!-- Popover error contents -->
+<div id="popup_confirmPassword" style="display: none">
+    <font color="red">Password does not match!!</font>
+</div>
+
+<div id="popover_usernameExits" style="display: none">
+    <font color="red">Username already exists!!</font>
+</div><!-- Popover error contents end-->
+
+<div id="popover_firstname" style="display: none">
+    <font color="red">Please enter first name!</font>
+</div><!-- Popover error contents end-->
+
+<div id="popover_lastname" style="display: none">
+    <font color="red">Please enter last name!</font>
+</div><!-- Popover error contents end-->
+
+<div id="popover_userName" style="display: none">
+    <font color="red">Please enter usernam!</font>
+</div><!-- Popover error contents end-->
+
+<div id="popover_password" style="display: none">
+    <font color="red">Please enter Password!</font>
+</div><!-- Popover error contents end-->
+
+<div id="popover_email" style="display: none">
+    <font color="red">Please enter a valid Email!</font>
+</div><!-- Popover error contents end-->
+
+<!-- JS for Password-ConfirmPassword and Username validations -->
+<script type = "text/javascript">
+    /*
+     $('form').on('submit',function(){
+     if($('#signUp_password').val()!=$('#signUp_confirmPassword').val()){
+
+     $('#signUp_confirmPassword').popover({
+     html: true,
+     trigger: 'manual',
+     placement: 'right',
+     content: function() {
+     return $('#popover_confirmPassError').html();
+     }
+     });
+     $('#signUp_confirmPassword').popover("show");
+
+     return false;
+     }
+     return true;
+     */
+</script>
+
+<script type = "text/javascript">
+            function singUp(){
+
+
+                if ($('#firstName').val() === '') {
+                    $('#firstName').popover({
+                        html: true,
+                        trigger: 'manual',
+                        placement: 'right',
+                        content: function() {
+                            return $('#popover_firstname').html();
+                        }
+                    });
+                    $('#firstName').popover("show");
+                    return false;
+                }
+                $('#firstName').popover("hide");
+
+
+                if ($('#lastName').val() === '') {
+                    $('#lastName').popover({
+                        html: true,
+                        trigger: 'manual',
+                        placement: 'right',
+                        content: function() {
+                            return $('#popover_lastname').html();
+                        }
+                    });
+                    $('#lastName').popover("show");
+                    return false;
+                }
+                $('#lastName').popover("hide");
+
+
+                var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+                if (!filter.test($('#email').val())) {
+                    $('#email').popover({
+                        html: true,
+                        trigger: 'manual',
+                        placement: 'right',
+                        content: function() {
+                            return $('#popover_email').html();
+                        }
+                    });
+                    $('#email').popover("show");
+                    return false;
+                }
+                $('#email').popover("hide");
+
+                if ($('#userName').val() === '') {
+                    $('#userName').popover({
+                        html: true,
+                        trigger: 'manual',
+                        placement: 'right',
+                        content: function() {
+                            return $('#popover_userName').html();
+                        }
+                    });
+                    $('#userName').popover("show");
+                    return false;
+                }
+                $('#userName').popover("hide");
+
+                if ($('#password').val() === '') {
+                    $('#password').popover({
+                        html: true,
+                        trigger: 'manual',
+                        placement: 'right',
+                        content: function() {
+                            return $('#popover_password').html();
+                        }
+                    });
+                    $('#password').popover("show");
+                    return false;
+                }
+                $('#password').popover("hide");
+
+
+
+                if($('#password').val()!=$('#confirmPassword').val()){
+
+                    $('#confirmPassword').popover({
+                        html: true,
+                        trigger: 'manual',
+                        placement: 'right',
+                        content: function() {
+                            return $('#popup_confirmPassword').html();
+                        }
+                    });
+                    $('#confirmPassword').popover("show");
+
+                    return false;
+                }
+                $('#confirmPassword').popover("hide");
+
+                var url = "signUp.jsp";
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $("#signUp").serialize(),
+                    success: function(data)
+                    {
+                        //$("#modal-container-signUp").modal('hide');
+                        //console.log(data);
+                        if(data!=false ){
+                            alert('Sign Up successfull!');
+                            $('#signUp').hide();
+
+                            return true;
+                        }
+                        else
+                        {
+                            alert('Username already exists');
+                        }
+                    }
+                });
+                //return true; // avoid to execute the actual submit of the form.
+            }
+
+
+</script>
+
+</body>
+
+</html>

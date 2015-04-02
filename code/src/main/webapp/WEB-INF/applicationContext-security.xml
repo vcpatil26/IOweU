@@ -1,0 +1,27 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <http use-expressions="true">
+        <intercept-url pattern="/dashboard.jps" access="permitAll" />
+        <intercept-url pattern="/home.jsp" access="permitAll" />
+        <intercept-url pattern="/signUp.jsp" access="permitAll" />
+
+        <intercept-url pattern="/css/**" access="permitAll" />
+        <intercept-url pattern="/js/**" access="permitAll" />
+        <intercept-url pattern="/images/**" access="permitAll" />
+
+        <!--block all the other urls-->
+        <intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+
+        <form-login login-page='/home.jsp' default-target-url="/dashboard.jsp" authentication-failure-url="/accessdenied.jsp"/>
+        <logout logout-success-url="/logout.jsp" delete-cookies="JSESSIONID"/>
+    </http>
+
+    <!-- The below section is dummy as of now. It will be needed when we maintain user information in DB -->
+    <authentication-manager>
+        <authentication-provider user-service-ref="userService" />
+    </authentication-manager>
+</beans:beans>

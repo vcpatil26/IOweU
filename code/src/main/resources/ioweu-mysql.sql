@@ -1,0 +1,139 @@
+CREATE TABLE USER
+(
+        uname VARCHAR(256),
+	      name VARCHAR(256),
+	      isregistered VARCHAR(256),
+        PRIMARY KEY (uname)
+);
+
+CREATE TABLE REGISTEREDUSER
+(
+        uname VARCHAR(256),
+        email VARCHAR(256),
+        pwdhash VARCHAR (256),
+        PRIMARY KEY(uname)
+);
+
+CREATE TABLE USERGROUP
+(
+        gname VARCHAR(256),
+        PRIMARY KEY(gname)
+);
+
+CREATE TABLE GROUPCONSISTUSER
+(
+      gname VARCHAR(256),
+      uname VARCHAR(256),
+      PRIMARY KEY (gname, uname),
+      FOREIGN KEY (gname) REFERENCES USERGROUP(gname) ON DELETE CASCADE,
+      FOREIGN KEY (uname) REFERENCES USER(uname) ON DELETE CASCADE
+
+);
+
+CREATE TABLE BILLINGTRANSACTION
+(
+       tid INT NOT NULL AUTO_INCREMENT,
+       date TIMESTAMP DEFAULT now() on update now(),
+       addedby VARCHAR(256),
+       gname VARCHAR(256),
+       amount DOUBLE,
+       description VARCHAR(256),
+       status VARCHAR(256),
+       PRIMARY KEY(tid),
+       FOREIGN KEY (addedby) REFERENCES REGISTEREDUSER(uname) ON DELETE CASCADE,
+       FOREIGN KEY (gname) REFERENCES USERGROUP(gname) ON DELETE CASCADE
+);
+
+CREATE TABLE TRACKBT
+(
+       uname VARCHAR(256),
+       tid INT,
+       description VARCHAR(256),
+       PRIMARY KEY(uname, tid),
+       FOREIGN KEY (uname) REFERENCES REGISTEREDUSER(uname) ON DELETE CASCADE,
+       FOREIGN KEY (tid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE
+);
+
+CREATE TABLE TRACKST
+(
+       uname VARCHAR(256),
+       tid INT,
+       description VARCHAR(256),
+       PRIMARY KEY(uname, tid),
+       FOREIGN KEY (uname) REFERENCES REGISTEREDUSER(uname) ON DELETE CASCADE,
+       FOREIGN KEY (tid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE
+);
+
+CREATE TABLE TRACKGROUP
+(
+       uname VARCHAR(256),
+       gname VARCHAR(256),
+       description VARCHAR(256),
+       PRIMARY KEY(uname, gname),
+       FOREIGN KEY (uname) REFERENCES REGISTEREDUSER(uname) ON DELETE CASCADE,
+       FOREIGN KEY (gname) REFERENCES USERGROUP(gname) ON DELETE CASCADE
+);
+
+
+CREATE TABLE RECURRINGTRANSACTION
+(
+       tid INT,
+       isweekly VARCHAR(256),
+       day VARCHAR(256),
+       PRIMARY KEY(tid),
+       FOREIGN KEY (tid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE
+);
+
+CREATE TABLE SHAREBILL
+(
+         tid INT,
+         uname VARCHAR(256),
+         amount DOUBLE,
+         status VARCHAR(256),
+         msg VARCHAR(256),
+         PRIMARY KEY(tid,uname),
+         FOREIGN KEY (tid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE,
+         FOREIGN KEY (uname) REFERENCES USER(uname) ON DELETE CASCADE
+);
+
+CREATE TABLE CATEGORY
+(
+         cname VARCHAR(256),
+         PRIMARY KEY(cname)
+);
+
+CREATE TABLE CATEGORIZEDTRANSACTION
+(
+          tid INT,
+	        cname VARCHAR(256),
+	        amount DOUBLE,
+          PRIMARY KEY(tid, cname),
+          FOREIGN KEY (tid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE,
+          FOREIGN KEY (cname) REFERENCES CATEGORY(cname) ON DELETE CASCADE
+);
+
+CREATE TABLE SETTLINGTRANSACTION
+(
+          tid INT NOT NULL AUTO_INCREMENT,
+          date TIMESTAMP DEFAULT now() on update now(),
+          description VARCHAR(256),
+          PRIMARY KEY (tid)
+);
+
+CREATE TABLE SETTLEBETWEENUSER
+(
+          uname VARCHAR(256),
+          tid INT,
+          PRIMARY KEY (uname, tid),
+          FOREIGN KEY (tid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE,
+          FOREIGN KEY (uname) REFERENCES REGISTEREDUSER(uname) ON DELETE CASCADE
+);
+
+CREATE TABLE SETTLE
+(
+       stid INT,
+       btid INT,
+       PRIMARY KEY(stid, btid),
+       FOREIGN KEY (stid) REFERENCES SETTLINGTRANSACTION(tid) ON DELETE CASCADE,
+       FOREIGN KEY (btid) REFERENCES BILLINGTRANSACTION(tid) ON DELETE CASCADE
+);

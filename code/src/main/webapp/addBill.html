@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IOwe-AddBill</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="css/style.css" rel="stylesheet"> -->
+  <!-- Add custom CSS here -->
+  <link href="css/ioweu.css" rel="stylesheet">
+  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+  <!-- Page Specific CSS -->
+  <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+
+ 
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="img/favicon.png">
+  
+  
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/scripts.js"></script>
+  
+  <script type="text/javascript" src="js/flot/jquery.flot.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.pie.js"></script>
+  <script type="text/javascript" src="js/flot/jquery.flot.resize.js"></script>
+  <script type="text/javascript">
+     count = 0;
+    function addBill_addAnotherMemberHelper(){
+     // alert('came here');
+     var divElement = document.createElement("DIV");
+     divElement.innerHTML = '<div class="col-sm-4"></div><div class="col-sm-5"><input class="form-control" type="text" placeholder="Username" required="required"></div><div style="padding:0px" class="col-sm-2"><input class="form-control" type="number" placeholder="%" required="required"></div><div class="col-sm-1"><button type="button" class="close" data-dismiss="" aria-hidden="true">×</button></div>'
+     document.getElementById("addBill_addAnotherMember").appendChild(divElement);
+    }
+  </script>
+</head>
+<body>
+
+
+
+<a id="modal-addBill" href="#modal-container-addBill" data-toggle="modal">Settle</a>
+
+
+
+
+<!-- Modal for adding a Bill -->
+<div class="modal fade" id="modal-container-addBill" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div style="padding-bottom:1%" class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h2 class="modal-title text-center" id="myModalLabel">Add a Bill</h2>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal well">
+					<div class="form-group col-sm-12">
+						<div class="col-sm-4">
+							<label for="categories" class="control-label">Categories</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control">
+								<option selected>None</option>
+								<option>Groceries</option>
+								<option>Utilities</option>
+								<option>Rent</option>
+								<option>Clothing</option>
+								<option>Other than mentioned</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group col-sm-12">
+						<div class="col-sm-4">
+							<label for="description" class="control-label">Description</label>
+						</div>
+						<div class="col-sm-6">
+							<input  class="form-control" id="description" placeholder="Describe the bill" type="text" required="required">
+						</div>
+					</div>	
+					<div class="form-group col-sm-12">
+						<div class="col-sm-4">
+							<label for="totalAmount" class="control-label">Total Amount</label> 
+						</div>
+						<div class="col-sm-6">
+							<input  class="form-control" id="totalAmount" placeholder="Enter the amount in Dollars" type="text" required="required">
+						</div>
+					</div>
+					<div class="form-group col-sm-12">
+						<div class="col-sm-4">
+							<label for="group" class="control-label">Group</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control">
+								<option selected>None</option>
+								<option>Office Group</option>
+								<option>Roommates</option>
+								<option>weekend's Group</option>
+								<option>Other than mentioned</option>
+							</select>
+						</div>
+					</div>
+					<div id="addBill_addAnotherMember" class="form-group col-sm-12">
+						<div class="col-sm-4">
+							<label class="control-label">Shared With:</label>
+						</div>
+						<div class="col-sm-5">
+							<input class="form-control" type="text" placeholder="Username" required="required">
+						</div>
+						<div style="padding:0px" class="col-sm-2">
+							<input class="form-control" type="number" placeholder="%" required="required">
+						</div>
+						<div class="col-sm-1">
+							<button type="button" class="close" data-dismiss="" aria-hidden="true">×</button>
+						</div>
+					</div>	
+					<div class="form-group col-sm-12">
+						<div class="col-sm-4"></div>
+						<div class="col-sm-4">
+							<a onclick="addBill_addAnotherMemberHelper()">Add Another</a>
+						</div>
+						<div class="col-sm-4">
+							<label><input type="checkbox">   Share Equally</label>
+						</div>
+					</div>
+					<div class="form-group col-sm-12">
+						<div class="col-sm-4">
+							<label for="date" class="control-label">Date</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="date" class="form-control" id="date" placeholder="Enter the date in MM/DD/YYYY">
+						</div>
+					</div>
+						
+					<div class="form-group col-sm-12">
+						<div class="col-sm-8 pull-right">
+							<input type="checkbox">  Recurring Transaction
+						</div>
+					</div>			
+					<div class="form-group col-sm-12">
+						<div class="col-sm-8 pull-right">
+							<div class="col-sm-5">
+								<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked> Monthly
+							</div>
+							<div class="col-sm-4">
+								<input style="height:35px" class="form-control" type="number" value="1" required="required">
+							</div>
+						</div>
+						<div class="col-sm-8 pull-right">
+							<div class="col-sm-5">
+								<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked> weekly
+							</div>
+							<div class="col-sm-4">
+								<input style="height:35px" class="form-control" type="number" value="1" required="required">
+							</div>
+						</div>
+					</div>
+					<hr />
+					<div class="form-group col-sm-12">
+						<div class=" ">
+				
+							<button style="margin-left:3px" type="button" class="btn  btn-success pull-right" id="Group_Create">Create Group</button>
+							<button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+				
+						</div>
+					</div>
+				</form>
+			</div>							
+		</div>	
+	</div>			
+</div><!-- Modal for adding a Bill end-->
+			
+			
+			
+</body>

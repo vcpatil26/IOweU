@@ -1,0 +1,39 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:annotation-driven />
+
+    <!--<mvc:resources mapping="**" location="/" />-->
+
+    <!-- Scan for services -->
+    <context:component-scan base-package="org.ioweu.service"/>
+    <!--scan for controllers-->
+    <context:component-scan base-package="org.ioweu.controller"/>
+
+    <context:property-placeholder location="classpath:ioweu.properties"/>
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://silo.cs.indiana.edu:3306/b561f13_cpelikan" />
+        <property name="username" value="b561f13_cpelikan"/>
+        <property name="password" value="my+sql=b561f13_cpelikan"/>
+    </bean>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".html"/>
+    </bean>
+
+</beans>
+
